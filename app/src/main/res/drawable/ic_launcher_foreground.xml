@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Two mountain ridges, echoing the in-app header. -->
+    <path
+        android:fillColor="#FFB4C7CC"
+        android:pathData="M30,66 L44,46 L52,56 L62,40 L78,66 Z" />
+    <path
+        android:fillColor="@color/launcher_foreground"
+        android:pathData="M28,72 L42,58 L54,66 L66,54 L80,72 Z" />
+</vector>

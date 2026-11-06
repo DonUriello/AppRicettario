@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ricettario</string>
+
+    <!-- Bottom navigation -->
+    <string name="navigation_recipes">Ricette</string>
+    <string name="navigation_plan">Da cucinare</string>
+    <string name="navigation_plan_with_count">Da cucinare (%1$d)</string>
+    <string name="navigation_shopping">Spesa</string>
+
+    <!-- Common -->
+    <string name="action_back_to_recipes">Ricette</string>
+    <string name="action_cancel">Annulla</string>
+    <string name="action_save">Salva</string>
+    <string name="action_edit">Modifica</string>
+    <string name="action_remove">Rimuovi</string>
+    <string name="action_take_off">Togli</string>
+    <string name="action_decrease">Meno</string>
+    <string name="action_increase">Più</string>
+    <string name="action_add">Aggiungi</string>
+    <string name="action_close">Chiudi</string>
+    <string name="action_go_to_recipes">Vai alle ricette</string>
+
+    <!-- Recipe list -->
+    <string name="recipes_title">Ricette</string>
+    <string name="recipes_new">Nuova</string>
+    <string name="recipes_search_label">Cerca per nome, tag o ingrediente</string>
+    <string name="recipes_filter_all">Tutte</string>
+    <string name="recipes_video_import_title">Importa da un video</string>
+    <string name="recipes_video_import_coming_soon">Incolla il link di un video e ottieni una bozza da verificare. Disponibile in una prossima versione.</string>
+    <string name="recipes_add_to_plan">Da cucinare</string>
+    <string name="recipes_planned_badge">In programma</string>
+    <string name="recipes_review">Verifica</string>
+    <plurals name="recipes_draft_summary">
+        <item quantity="one">Bozza da video · %1$d riga da verificare</item>
+        <item quantity="other">Bozza da video · %1$d righe da verificare</item>
+    </plurals>
+    <string name="recipes_summary">%1$s · %2$s</string>
+    <plurals name="servings_count">
+        <item quantity="one">%1$d porzione</item>
+        <item quantity="other">%1$d porzioni</item>
+    </plurals>
+    <plurals name="ingredients_count">
+        <item quantity="one">%1$d ingrediente</item>
+        <item quantity="other">%1$d ingredienti</item>
+    </plurals>
+    <string name="recipes_empty">Non hai ancora nessuna ricetta. Inizia con \"Nuova\".</string>
+    <string name="recipes_no_results">Nessuna ricetta corrisponde alla ricerca.</string>
+    <string name="recipes_rename_tag">Rinomina il tag \"%1$s\"</string>
+    <string name="recipes_rename_tag_title">Rinomina tag</string>
+    <string name="recipes_rename_tag_hint">Se il nuovo nome esiste già, i due tag vengono uniti.</string>
+    <string name="recipes_rename_tag_field">Nuovo nome</string>
+    <string name="recipes_rename_tag_confirm">Rinomina</string>
+
+    <!-- Recipe detail -->
+    <string name="detail_source">Fonte: %1$s</string>
+    <string name="detail_servings_label">Porzioni</string>
+    <string name="detail_ingredients">Ingredienti</string>
+    <string name="detail_instructions">Procedimento</string>
+    <string name="detail_no_instructions">Nessun procedimento scritto.</string>
+    <string name="detail_no_ingredients">Nessun ingrediente.</string>
+    <string name="detail_add_to_plan">Aggiungi a Da cucinare</string>
+    <string name="detail_update_plan">Aggiorna le porzioni in Da cucinare</string>
+    <string name="detail_already_planned">Già in Da cucinare</string>
+    <string name="detail_verify_first">Verifica la ricetta prima di aggiungerla</string>
+    <string name="detail_not_found">Questa ricetta non esiste più.</string>
+
+    <!-- Recipe editor -->
+    <string name="editor_title_new">Nuova ricetta</string>
+    <string name="editor_title_edit">Modifica ricetta</string>
+    <string name="editor_field_title">Titolo</string>
+    <string name="editor_field_link">Link (opzionale)</string>
+    <string name="editor_field_servings">Porzioni</string>
+    <string name="editor_field_tags">Tag</string>
+    <string name="editor_field_add_tag">Aggiungi tag</string>
+    <string name="editor_ingredients">Ingredienti</string>
+    <string name="editor_ingredient_quantity">Quantità</string>
+    <string name="editor_ingredient_unit">Unità</string>
+    <string name="editor_ingredient_name">Ingrediente</string>
+    <string name="editor_ingredient_aisle">Reparto: %1$s</string>
+    <string name="editor_add_ingredient">Aggiungi ingrediente</string>
+    <string name="editor_paste_list">Incolla una lista</string>
+    <string name="editor_paste_list_title">Incolla una lista</string>
+    <string name="editor_paste_list_hint">Un ingrediente per riga, per esempio \"200 g farina\" o \"sale q.b.\"</string>
+    <string name="editor_paste_list_field">Ingredienti</string>
+    <string name="editor_paste_list_confirm">Aggiungi alla ricetta</string>
+    <string name="editor_instructions">Procedimento</string>
+    <string name="editor_instructions_hint">Un passaggio per riga</string>
+    <string name="editor_delete">Elimina ricetta</string>
+    <string name="editor_delete_confirm">Conferma eliminazione</string>
+    <string name="editor_title_required">Serve un titolo per salvare</string>
+    <string name="editor_no_ingredients">Nessun ingrediente. Aggiungine uno o incolla una lista.</string>
+
+    <!-- Units shown in the editor dropdown -->
+    <string name="unit_gram">g</string>
+    <string name="unit_kilogram">kg</string>
+    <string name="unit_milliliter">ml</string>
+    <string name="unit_liter">l</string>
+    <string name="unit_piece">pz</string>
+    <string name="unit_clove">spicchi</string>
+    <string name="unit_tablespoon">cucchiai</string>
+    <string name="unit_teaspoon">cucchiaini</string>
+    <string name="unit_to_taste">q.b.</string>
+
+    <!-- Aisles -->
+    <string name="aisle_produce">Frutta e verdura</string>
+    <string name="aisle_meat_and_fish">Carne e pesce</string>
+    <string name="aisle_dairy_and_eggs">Latticini e uova</string>
+    <string name="aisle_bread_pasta_and_rice">Pane, pasta e riso</string>
+    <string name="aisle_dry_goods">Dispensa</string>
+    <string name="aisle_frozen">Surgelati</string>
+    <string name="aisle_other">Altro</string>
+
+    <!-- Meal plan -->
+    <string name="plan_title">Da cucinare</string>
+    <string name="plan_clear">Svuota</string>
+    <string name="plan_recipe_for">ricetta per %1$d</string>
+    <string name="plan_add_more">Aggiungi altre ricette</string>
+    <string name="plan_go_to_shopping_list">Vai alla lista spesa</string>
+    <string name="plan_empty">Non hai ancora scelto cosa cucinare</string>
+
+    <!-- Shopping list -->
+    <string name="shopping_title">Lista spesa</string>
+    <string name="shopping_copy">Copia</string>
+    <string name="shopping_reset">Azzera</string>
+    <string name="shopping_progress">%1$d di %2$d presi</string>
+    <string name="shopping_staples_title">Di solito ce l\'hai in casa</string>
+    <string name="shopping_staples_edit">Dispensa</string>
+    <string name="shopping_staples_none">Nessun ingrediente della dispensa in queste ricette.</string>
+    <string name="shopping_copied">Lista copiata negli appunti</string>
+    <string name="shopping_clipboard_label">Lista spesa</string>
+    <string name="shopping_empty">Non hai ancora scelto cosa cucinare</string>
+    <string name="shopping_all_taken">Hai preso tutto!</string>
+    <string name="staples_sheet_title">Dispensa</string>
+    <string name="staples_sheet_hint">Le cose che hai sempre in casa finiscono in fondo alla lista spesa.</string>
+    <string name="staples_sheet_field">Nuovo ingrediente</string>
+    <string name="staples_sheet_empty">La dispensa è vuota.</string>
+</resources>
