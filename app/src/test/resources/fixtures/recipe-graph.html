@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="application/ld+json">{ this is not valid json </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "WebSite", "name": "Blog di cucina" },
+    { "@type": "WebPage", "name": "Lasagne alla bolognese" },
+    {
+      "@type": "Recipe",
+      "name": "Lasagne alla bolognese",
+      "recipeYield": ["8", "8 porzioni"],
+      "recipeIngredient": ["500 g sfoglia per lasagne", "1 l besciamella", "Parmigiano 100 g"],
+      "recipeInstructions": [
+        {
+          "@type": "HowToSection",
+          "name": "Il ragù",
+          "itemListElement": [
+            { "@type": "HowToStep", "text": "Prepara il soffritto." },
+            { "@type": "HowToStep", "text": "Aggiungi la carne e cuoci 2 ore." }
+          ]
+        },
+        {
+          "@type": "HowToSection",
+          "name": "Montaggio",
+          "itemListElement": [
+            { "@type": "HowToStep", "text": "Alterna sfoglia, ragù e besciamella." },
+            { "@type": "HowToStep", "text": "Inforna a 180 gradi per 40 minuti." }
+          ]
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body></body>
+</html>

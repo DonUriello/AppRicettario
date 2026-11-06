@@ -32,9 +32,10 @@
     <string name="recipes_planned_badge">In programma</string>
     <string name="recipes_review">Verifica</string>
     <plurals name="recipes_draft_summary">
-        <item quantity="one">Bozza da video · %1$d riga da verificare</item>
-        <item quantity="other">Bozza da video · %1$d righe da verificare</item>
+        <item quantity="one">Bozza importata · %1$d riga da verificare</item>
+        <item quantity="other">Bozza importata · %1$d righe da verificare</item>
     </plurals>
+    <string name="recipes_draft_summary_no_lines">Bozza importata · da verificare</string>
     <string name="recipes_summary">%1$s · %2$s</string>
     <plurals name="servings_count">
         <item quantity="one">%1$d porzione</item>
@@ -51,6 +52,34 @@
     <string name="recipes_rename_tag_hint">Se il nuovo nome esiste già, i due tag vengono uniti.</string>
     <string name="recipes_rename_tag_field">Nuovo nome</string>
     <string name="recipes_rename_tag_confirm">Rinomina</string>
+
+    <!-- Import from a web page -->
+    <string name="import_link_title">Importa da link</string>
+    <string name="import_link_hint">Incolla il link di una ricetta: la salvo qui, senza pubblicità.</string>
+    <string name="import_link_field">Link della ricetta</string>
+    <string name="import_link_action">Importa</string>
+    <string name="import_link_loading">Sto leggendo la pagina…</string>
+    <string name="import_error_invalid_url">Questo non sembra un link valido.</string>
+    <string name="import_error_download">Non riesco a scaricare la pagina. Controlla la connessione e il link.</string>
+    <string name="import_error_no_recipe">Non ho trovato una ricetta strutturata in questa pagina</string>
+    <string name="import_create_manually">Scrivila a mano con questo link</string>
+    <string name="review_note_missing_quantity">Quantità non indicata nella pagina: \"%1$s\"</string>
+
+    <!-- Draft review -->
+    <string name="review_title">Verifica bozza</string>
+    <string name="review_save_draft">Salva bozza</string>
+    <string name="review_save_verified">Salva come verificata</string>
+    <plurals name="review_banner">
+        <item quantity="one">%1$d riga da controllare</item>
+        <item quantity="other">%1$d righe da controllare</item>
+    </plurals>
+    <string name="review_banner_hint">Le righe evidenziate sono quelle su cui ho dei dubbi. Confermale, correggile o toglile.</string>
+    <string name="review_banner_done">Tutto controllato: puoi salvarla come verificata.</string>
+    <string name="review_confirm">Conferma</string>
+    <string name="review_edit">Modifica</string>
+    <string name="review_confirmed">Confermata</string>
+    <string name="review_edit_rest">Modifica il resto della ricetta</string>
+    <string name="review_steps_count">%1$d passaggi nel procedimento</string>
 
     <!-- Recipe detail -->
     <string name="detail_source">Fonte: %1$s</string>

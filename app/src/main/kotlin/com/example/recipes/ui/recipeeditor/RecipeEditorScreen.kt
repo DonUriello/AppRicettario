@@ -1,7 +1,6 @@
 package com.example.recipes.ui.recipeeditor
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -18,8 +17,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -29,11 +26,9 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -42,9 +37,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.recipes.R
-import com.example.recipes.domain.Aisle
-import com.example.recipes.domain.MeasurementUnit
 import com.example.recipes.ui.components.CardTitle
+import com.example.recipes.ui.components.EditableIngredient
+import com.example.recipes.ui.components.IngredientEditorFields
 import com.example.recipes.ui.components.FilterPill
 import com.example.recipes.ui.components.GlassCard
 import com.example.recipes.ui.components.LabelButton
@@ -56,8 +51,6 @@ import com.example.recipes.ui.components.PushedScreenTopBar
 import com.example.recipes.ui.components.RecipesTextField
 import com.example.recipes.ui.components.RowDivider
 import com.example.recipes.ui.components.ServingsStepper
-import com.example.recipes.ui.components.aisleLabel
-import com.example.recipes.ui.components.labelResource
 import com.example.recipes.ui.theme.RecipesColors
 import com.example.recipes.ui.theme.RecipesDimensions
 
@@ -228,77 +221,17 @@ private fun IngredientsCard(uiState: RecipeEditorUiState, viewModel: RecipeEdito
 
 @Composable
 private fun IngredientEditorRow(ingredient: EditableIngredient, viewModel: RecipeEditorViewModel) {
-    val rowColor = if (ingredient.reviewNote != null) RecipesColors.warningContainerRow else androidx.compose.ui.graphics.Color.Transparent
+    val rowColor = if (ingredient.reviewNote != null) RecipesColors.warningContainerRow else Color.Transparent
     Surface(color = rowColor, shape = RoundedCornerShape(RecipesDimensions.inputRadius)) {
         Column(modifier = Modifier.padding(vertical = 10.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             ingredient.reviewNote?.let { note ->
                 Text(text = note, style = MaterialTheme.typography.bodySmall, color = RecipesColors.warningText)
             }
-            RecipesTextField(
-                value = ingredient.name,
-                onValueChange = { viewModel.onIngredientNameChange(ingredient.key, it) },
-                label = stringResource(R.string.editor_ingredient_name),
-                modifier = Modifier.fillMaxWidth(),
+            IngredientEditorFields(
+                ingredient = ingredient,
+                onChange = viewModel::updateIngredient,
+                onRemove = { viewModel.removeIngredient(ingredient.key) },
             )
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                RecipesTextField(
-                    value = ingredient.quantityText,
-                    onValueChange = { viewModel.onIngredientQuantityChange(ingredient.key, it) },
-                    label = stringResource(R.string.editor_ingredient_quantity),
-                    modifier = Modifier.width(120.dp),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                )
-                Spacer(Modifier.width(8.dp))
-                OptionPicker(
-                    selectedLabel = stringResource(ingredient.unit.labelResource),
-                    options = MeasurementUnit.entries,
-                    optionLabel = { stringResource(it.labelResource) },
-                    onSelect = { viewModel.onIngredientUnitChange(ingredient.key, it) },
-                )
-                Spacer(Modifier.weight(1f))
-                LabelButton(
-                    text = stringResource(R.string.action_remove),
-                    onClick = { viewModel.removeIngredient(ingredient.key) },
-                    color = RecipesColors.warningText,
-                )
-            }
-            OptionPicker(
-                selectedLabel = stringResource(R.string.editor_ingredient_aisle, aisleLabel(ingredient.aisle)),
-                options = Aisle.entries,
-                optionLabel = { aisleLabel(it) },
-                onSelect = { viewModel.onIngredientAisleChange(ingredient.key, it) },
-                style = PillStyle.Glass,
-            )
-        }
-    }
-}
-
-/** A pill showing the current choice; tapping it opens a menu of options. */
-@Composable
-private fun <T> OptionPicker(
-    selectedLabel: String,
-    options: List<T>,
-    optionLabel: @Composable (T) -> String,
-    onSelect: (T) -> Unit,
-    style: PillStyle = PillStyle.Tonal,
-) {
-    var isExpanded by remember { mutableStateOf(false) }
-    Box {
-        PillButton(text = selectedLabel, onClick = { isExpanded = true }, style = style)
-        DropdownMenu(
-            expanded = isExpanded,
-            onDismissRequest = { isExpanded = false },
-            containerColor = RecipesColors.backgroundBottom,
-        ) {
-            options.forEach { option ->
-                DropdownMenuItem(
-                    text = { Text(optionLabel(option), style = MaterialTheme.typography.bodyLarge) },
-                    onClick = {
-                        onSelect(option)
-                        isExpanded = false
-                    },
-                )
-            }
         }
     }
 }

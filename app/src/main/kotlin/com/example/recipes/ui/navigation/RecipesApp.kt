@@ -20,6 +20,7 @@ import androidx.navigation.navArgument
 import com.example.recipes.R
 import com.example.recipes.ui.components.BottomBarItem
 import com.example.recipes.ui.components.FloatingBottomBar
+import com.example.recipes.ui.draftreview.DraftReviewScreen
 import com.example.recipes.ui.mealplan.MealPlanScreen
 import com.example.recipes.ui.recipedetail.RecipeDetailScreen
 import com.example.recipes.ui.recipeeditor.RecipeEditorScreen
@@ -41,12 +42,21 @@ fun RecipesApp(appViewModel: AppViewModel = hiltViewModel()) {
             composable(Routes.RECIPES) {
                 RecipeListScreen(
                     onRecipeClick = { navController.navigate(Routes.recipeDetail(it)) },
-                    onNewRecipeClick = { navController.navigate(Routes.RECIPE_NEW) },
-                    // Draft review arrives in phase 2; until then drafts open in the editor.
-                    onReviewDraftClick = { navController.navigate(Routes.recipeEdit(it)) },
+                    onNewRecipeClick = { navController.navigate(Routes.newRecipe()) },
+                    onReviewDraftClick = { navController.navigate(Routes.recipeReview(it)) },
+                    onCreateRecipeWithLink = { navController.navigate(Routes.newRecipe(sourceUrl = it)) },
                 )
             }
-            composable(Routes.RECIPE_NEW) {
+            composable(
+                Routes.RECIPE_NEW,
+                arguments = listOf(
+                    navArgument(Routes.SOURCE_URL_ARGUMENT) {
+                        type = NavType.StringType
+                        nullable = true
+                        defaultValue = null
+                    },
+                ),
+            ) {
                 RecipeEditorScreen(
                     onCancel = { navController.popBackStack() },
                     onSaved = { recipeId ->
@@ -74,6 +84,25 @@ fun RecipesApp(appViewModel: AppViewModel = hiltViewModel()) {
                     onCancel = { navController.popBackStack() },
                     onSaved = { navController.popBackStack() },
                     onDeleted = { navController.popBackStack(Routes.RECIPES, inclusive = false) },
+                )
+            }
+            composable(
+                Routes.RECIPE_REVIEW,
+                arguments = listOf(navArgument(Routes.RECIPE_ID_ARGUMENT) { type = NavType.StringType }),
+            ) {
+                DraftReviewScreen(
+                    onCancel = { navController.popBackStack() },
+                    onSavedAsDraft = { navController.popBackStack() },
+                    onSavedAsVerified = { recipeId ->
+                        navController.navigate(Routes.recipeDetail(recipeId)) {
+                            popUpTo(Routes.RECIPE_REVIEW) { inclusive = true }
+                        }
+                    },
+                    onEditRest = { recipeId ->
+                        navController.navigate(Routes.recipeEdit(recipeId)) {
+                            popUpTo(Routes.RECIPE_REVIEW) { inclusive = true }
+                        }
+                    },
                 )
             }
             composable(Routes.PLAN) {

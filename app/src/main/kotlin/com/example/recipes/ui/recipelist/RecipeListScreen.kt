@@ -52,6 +52,7 @@ fun RecipeListScreen(
     onRecipeClick: (String) -> Unit,
     onNewRecipeClick: () -> Unit,
     onReviewDraftClick: (String) -> Unit,
+    onCreateRecipeWithLink: (String) -> Unit,
     viewModel: RecipeListViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -101,6 +102,7 @@ fun RecipeListScreen(
                 )
             }
         }
+        item { LinkImportCard(onDraftCreated = onReviewDraftClick, onCreateManually = onCreateRecipeWithLink) }
         item { VideoImportCard() }
         if (!uiState.isLoading) {
             item {
@@ -185,11 +187,15 @@ private fun RecipeRow(recipe: Recipe, onClick: () -> Unit, onAddToPlan: () -> Un
             CardTitle(text = recipe.title)
             if (recipe.isDraft) {
                 Text(
-                    text = pluralStringResource(
-                        R.plurals.recipes_draft_summary,
-                        recipe.ingredientsToReviewCount,
-                        recipe.ingredientsToReviewCount,
-                    ),
+                    text = if (recipe.ingredientsToReviewCount == 0) {
+                        stringResource(R.string.recipes_draft_summary_no_lines)
+                    } else {
+                        pluralStringResource(
+                            R.plurals.recipes_draft_summary,
+                            recipe.ingredientsToReviewCount,
+                            recipe.ingredientsToReviewCount,
+                        )
+                    },
                     style = MaterialTheme.typography.bodySmall,
                     color = RecipesColors.warningText,
                 )

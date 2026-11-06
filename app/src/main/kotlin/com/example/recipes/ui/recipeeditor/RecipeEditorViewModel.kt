@@ -4,18 +4,15 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recipes.data.repository.RecipeRepository
-import com.example.recipes.domain.Aisle
-import com.example.recipes.domain.AisleGuesser
-import com.example.recipes.domain.Ingredient
 import com.example.recipes.domain.IngredientTextParser
 import com.example.recipes.domain.MeasurementUnit
 import com.example.recipes.domain.QuantityFormatter
 import com.example.recipes.domain.Recipe
 import com.example.recipes.domain.RecipeStatus
 import com.example.recipes.domain.TagNames
+import com.example.recipes.ui.components.EditableIngredient
 import com.example.recipes.ui.navigation.Routes
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -27,21 +24,6 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
-data class EditableIngredient(
-    /** Stable key for the UI list; equals the database id for existing ingredients. */
-    val key: String,
-    val quantityText: String,
-    val unit: MeasurementUnit,
-    val name: String,
-    val aisle: Aisle,
-    /** Once the user picks an aisle, renaming the ingredient no longer re-guesses it. */
-    val aisleWasEdited: Boolean = false,
-    val reviewNote: String? = null,
-) {
-    /** Accepts both "1,5" and "1.5". */
-    val quantity: Double? get() = quantityText.trim().replace(',', '.').toDoubleOrNull()
-}
 
 data class RecipeEditorUiState(
     val isLoading: Boolean = true,
@@ -74,7 +56,12 @@ class RecipeEditorViewModel @Inject constructor(
 
     private val recipeId: String? = savedStateHandle[Routes.RECIPE_ID_ARGUMENT]
 
-    private val mutableUiState = MutableStateFlow(RecipeEditorUiState(isLoading = recipeId != null, isNewRecipe = recipeId == null))
+    /** Pre-filled when a web import found no recipe and the user chose to write it by hand. */
+    private val prefilledSourceUrl: String = savedStateHandle.get<String>(Routes.SOURCE_URL_ARGUMENT).orEmpty()
+
+    private val mutableUiState = MutableStateFlow(
+        RecipeEditorUiState(isLoading = recipeId != null, isNewRecipe = recipeId == null, sourceUrl = prefilledSourceUrl),
+    )
     val uiState: StateFlow<RecipeEditorUiState> = mutableUiState.asStateFlow()
 
     val existingTags: StateFlow<List<String>> =
@@ -133,38 +120,11 @@ class RecipeEditorViewModel @Inject constructor(
     fun removeTag(tag: String) = mutableUiState.update { it.copy(tags = it.tags - tag) }
 
     fun addEmptyIngredient() = mutableUiState.update { state ->
-        state.copy(
-            ingredients = state.ingredients + EditableIngredient(
-                key = newKey(),
-                quantityText = "",
-                unit = MeasurementUnit.GRAM,
-                name = "",
-                aisle = Aisle.OTHER,
-            ),
-        )
+        state.copy(ingredients = state.ingredients + EditableIngredient.empty())
     }
 
-    fun updateIngredient(key: String, transform: (EditableIngredient) -> EditableIngredient) =
-        mutableUiState.update { state ->
-            state.copy(ingredients = state.ingredients.map { if (it.key == key) transform(it) else it })
-        }
-
-    fun onIngredientNameChange(key: String, name: String) = updateIngredient(key) { ingredient ->
-        ingredient.copy(name = name, aisle = if (ingredient.aisleWasEdited) ingredient.aisle else AisleGuesser.guess(name))
-    }
-
-    fun onIngredientQuantityChange(key: String, quantityText: String) = updateIngredient(key) { ingredient ->
-        val filteredText = quantityText.filter { it.isDigit() || it == ',' || it == '.' }
-        val unit = if (filteredText.isNotEmpty() && ingredient.unit == MeasurementUnit.TO_TASTE) MeasurementUnit.PIECE else ingredient.unit
-        ingredient.copy(quantityText = filteredText, unit = unit)
-    }
-
-    fun onIngredientUnitChange(key: String, unit: MeasurementUnit) = updateIngredient(key) { ingredient ->
-        ingredient.copy(unit = unit, quantityText = if (unit == MeasurementUnit.TO_TASTE) "" else ingredient.quantityText)
-    }
-
-    fun onIngredientAisleChange(key: String, aisle: Aisle) = updateIngredient(key) { ingredient ->
-        ingredient.copy(aisle = aisle, aisleWasEdited = true)
+    fun updateIngredient(updated: EditableIngredient) = mutableUiState.update { state ->
+        state.copy(ingredients = state.ingredients.map { if (it.key == updated.key) updated else it })
     }
 
     fun removeIngredient(key: String) = mutableUiState.update { state ->
@@ -181,7 +141,7 @@ class RecipeEditorViewModel @Inject constructor(
     fun addPastedIngredients() = mutableUiState.update { state ->
         val parsedIngredients = IngredientTextParser.parseLines(state.pasteText).map { parsed ->
             EditableIngredient(
-                key = newKey(),
+                key = EditableIngredient.newKey(),
                 quantityText = QuantityFormatter.formatForEditing(parsed.quantity),
                 unit = parsed.unit,
                 name = parsed.name,
@@ -217,16 +177,7 @@ class RecipeEditorViewModel @Inject constructor(
                     sourceUrl = state.sourceUrl,
                     instructions = state.instructions,
                     status = state.status,
-                    ingredients = state.ingredients.map { editable ->
-                        Ingredient(
-                            id = if (editable.key.startsWith(NEW_KEY_PREFIX)) "" else editable.key,
-                            quantity = if (editable.unit == MeasurementUnit.TO_TASTE) null else editable.quantity,
-                            unit = editable.unit,
-                            name = editable.name,
-                            aisle = editable.aisle,
-                            reviewNote = editable.reviewNote,
-                        )
-                    },
+                    ingredients = state.ingredients.map { it.toIngredient() },
                     tags = tags,
                     plannedServings = null,
                 ),
@@ -242,24 +193,8 @@ class RecipeEditorViewModel @Inject constructor(
         sourceUrl = sourceUrl.orEmpty(),
         servings = servings,
         tags = tags,
-        ingredients = ingredients.map { ingredient ->
-            EditableIngredient(
-                key = ingredient.id,
-                quantityText = QuantityFormatter.formatForEditing(ingredient.quantity),
-                unit = ingredient.unit,
-                name = ingredient.name,
-                aisle = ingredient.aisle,
-                aisleWasEdited = true,
-                reviewNote = ingredient.reviewNote,
-            )
-        },
+        ingredients = ingredients.map(EditableIngredient::from),
         instructions = instructions,
         status = status,
     )
-
-    private fun newKey() = NEW_KEY_PREFIX + UUID.randomUUID()
-
-    private companion object {
-        const val NEW_KEY_PREFIX = "new-"
-    }
 }

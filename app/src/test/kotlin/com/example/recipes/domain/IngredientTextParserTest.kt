@@ -60,4 +60,24 @@ class IngredientTextParserTest {
         val parsed = IngredientTextParser.parseLines("200 g farina\n\n   \n2 uova\n")
         assertEquals(listOf("farina", "uova"), parsed.map { it.name })
     }
+
+    @Test fun trailingQuantityAsOnRecipeSites() {
+        assertParsed("Spaghetti 320 g", 320.0, MeasurementUnit.GRAM, "Spaghetti", Aisle.BREAD_PASTA_AND_RICE)
+        assertParsed("Farina 00 250 g", 250.0, MeasurementUnit.GRAM, "Farina 00", Aisle.BREAD_PASTA_AND_RICE)
+        assertParsed("Uova (medie) 2", 2.0, MeasurementUnit.PIECE, "Uova (medie)", Aisle.DAIRY_AND_EGGS)
+        assertParsed("Burro 30 g.", 30.0, MeasurementUnit.GRAM, "Burro", Aisle.DAIRY_AND_EGGS)
+    }
+
+    @Test fun trailingNumberWithUnknownWordIsNotAQuantity() {
+        val parsed = IngredientTextParser.parseLine("Uova 2 medie")!!
+        assertEquals(MeasurementUnit.TO_TASTE, parsed.unit)
+        assertTrue(parsed.quantityWasMissing)
+    }
+
+    @Test fun fractions() {
+        assertParsed("1/2 cucchiaino di sale", 0.5, MeasurementUnit.TEASPOON, "sale", Aisle.DRY_GOODS)
+        assertParsed("½ limone", 0.5, MeasurementUnit.PIECE, "limone", Aisle.PRODUCE)
+        assertParsed("1 1/2 kg patate", 1.5, MeasurementUnit.KILOGRAM, "patate", Aisle.PRODUCE)
+        assertParsed("1½ cucchiai di olio", 1.5, MeasurementUnit.TABLESPOON, "olio", Aisle.DRY_GOODS)
+    }
 }
