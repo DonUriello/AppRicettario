@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -40,12 +41,13 @@ fun MountainScreen(
     modifier: Modifier = Modifier,
     bottomPadding: Dp = RecipesDimensions.bottomBarClearance,
     bottomContent: (@Composable () -> Unit)? = null,
+    listState: LazyListState = rememberLazyListState(),
     content: LazyListScope.() -> Unit,
 ) {
     GradientBackground(modifier = modifier) {
         MountainHeader()
         LazyColumn(
-            state = rememberLazyListState(),
+            state = listState,
             modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars),
             contentPadding = PaddingValues(
                 start = RecipesDimensions.screenHorizontalPadding,

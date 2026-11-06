@@ -24,6 +24,8 @@ Debug builds seed five sample recipes on first launch; every build starts with t
 (also inside arrays and `@graph`, with `HowToStep` / `HowToSection` instructions) and saves a draft
 (`NEEDS_REVIEW`). Ingredients without any quantity are flagged with a review note and must be
 confirmed, edited or removed on the review screen before the recipe can be saved as verified.
+Sharing a page from the browser ("Condividi → Importa in Ricettario") does the same: the app keeps
+the first link in the shared text and starts the import.
 Parser tests use saved HTML fixtures in `app/src/test/resources/fixtures`.
 
 ## Layout

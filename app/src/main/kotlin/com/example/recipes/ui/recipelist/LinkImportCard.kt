@@ -24,7 +24,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.recipes.R
 import com.example.recipes.ui.components.CardTitle
@@ -39,7 +38,7 @@ import com.example.recipes.ui.theme.RecipesColors
 fun LinkImportCard(
     onDraftCreated: (String) -> Unit,
     onCreateManually: (String) -> Unit,
-    viewModel: LinkImportViewModel = hiltViewModel(),
+    viewModel: LinkImportViewModel,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 

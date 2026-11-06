@@ -2,6 +2,7 @@ package com.example.recipes.ui.recipelist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.recipes.data.importing.SharedText
 import com.example.recipes.data.importing.WebImportResult
 import com.example.recipes.data.importing.WebRecipeImporter
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,6 +43,13 @@ class LinkImportViewModel @Inject constructor(
     val events: Flow<LinkImportEvent> = eventChannel.receiveAsFlow()
 
     fun onUrlChange(url: String) = mutableUiState.update { it.copy(url = url, problem = null) }
+
+    /** Text shared from another app: keep only its link and start the import right away. */
+    fun importSharedText(sharedText: String) {
+        if (uiState.value.isImporting) return
+        mutableUiState.value = LinkImportUiState(url = SharedText.linkOrText(sharedText))
+        import()
+    }
 
     fun import() {
         val url = uiState.value.url

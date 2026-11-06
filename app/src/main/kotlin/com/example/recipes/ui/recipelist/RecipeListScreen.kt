@@ -11,12 +11,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,12 +55,25 @@ fun RecipeListScreen(
     onNewRecipeClick: () -> Unit,
     onReviewDraftClick: (String) -> Unit,
     onCreateRecipeWithLink: (String) -> Unit,
+    sharedText: String? = null,
+    onSharedTextConsumed: () -> Unit = {},
     viewModel: RecipeListViewModel = hiltViewModel(),
+    linkImportViewModel: LinkImportViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var tagBeingRenamed by rememberSaveable { mutableStateOf<String?>(null) }
+    val listState = rememberLazyListState()
 
-    MountainScreen {
+    // A link shared from the browser: show the import card and start importing.
+    LaunchedEffect(sharedText) {
+        if (sharedText != null) {
+            onSharedTextConsumed()
+            listState.scrollToItem(0)
+            linkImportViewModel.importSharedText(sharedText)
+        }
+    }
+
+    MountainScreen(listState = listState) {
         item {
             ScreenTitle(text = stringResource(R.string.recipes_title)) {
                 PillButton(
@@ -102,7 +117,13 @@ fun RecipeListScreen(
                 )
             }
         }
-        item { LinkImportCard(onDraftCreated = onReviewDraftClick, onCreateManually = onCreateRecipeWithLink) }
+        item {
+            LinkImportCard(
+                onDraftCreated = onReviewDraftClick,
+                onCreateManually = onCreateRecipeWithLink,
+                viewModel = linkImportViewModel,
+            )
+        }
         item { VideoImportCard() }
         if (!uiState.isLoading) {
             item {

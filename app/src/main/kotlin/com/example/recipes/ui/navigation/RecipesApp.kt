@@ -3,6 +3,7 @@ package com.example.recipes.ui.navigation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,12 +31,30 @@ import com.example.recipes.ui.theme.GradientBackground
 
 private val bottomBarRoutes = setOf(Routes.RECIPES, Routes.PLAN, Routes.SHOPPING)
 
+/**
+ * [sharedText] is text shared to the app from another app (usually a link from the browser);
+ * the recipe list imports it and then calls [onSharedTextConsumed].
+ */
 @Composable
-fun RecipesApp(appViewModel: AppViewModel = hiltViewModel()) {
+fun RecipesApp(
+    sharedText: String? = null,
+    onSharedTextConsumed: () -> Unit = {},
+    appViewModel: AppViewModel = hiltViewModel(),
+) {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
     val plannedCount by appViewModel.plannedCount.collectAsStateWithLifecycle()
+
+    // Bring the recipe list (with its import card) to the front when something is shared.
+    LaunchedEffect(sharedText) {
+        if (sharedText != null && navController.currentDestination?.route != Routes.RECIPES) {
+            navController.navigate(Routes.RECIPES) {
+                popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
+                launchSingleTop = true
+            }
+        }
+    }
 
     GradientBackground {
         NavHost(navController = navController, startDestination = Routes.RECIPES, modifier = Modifier.fillMaxSize()) {
@@ -45,6 +64,8 @@ fun RecipesApp(appViewModel: AppViewModel = hiltViewModel()) {
                     onNewRecipeClick = { navController.navigate(Routes.newRecipe()) },
                     onReviewDraftClick = { navController.navigate(Routes.recipeReview(it)) },
                     onCreateRecipeWithLink = { navController.navigate(Routes.newRecipe(sourceUrl = it)) },
+                    sharedText = sharedText,
+                    onSharedTextConsumed = onSharedTextConsumed,
                 )
             }
             composable(
