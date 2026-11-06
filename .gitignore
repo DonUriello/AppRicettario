@@ -8,3 +8,8 @@ build/
 .externalNativeBuild/
 .cxx/
 .kotlin/
+
+# Release signing: keep the key and its passwords out of the repository.
+keystore.properties
+*.jks
+*.keystore

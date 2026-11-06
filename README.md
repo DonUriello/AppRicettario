@@ -18,6 +18,12 @@ All tests run on the JVM: domain logic as plain JUnit, Room and the Compose UI t
 Debug builds seed five sample recipes on first launch; every build starts with the default staples
 (`sale`, `olio extravergine`, `pepe`).
 
+## Signed release
+
+`./gradlew :app:assembleRelease` signs the APK when `keystore.properties` exists at the project root
+(`storeFile`, `storePassword`, `keyAlias`, `keyPassword`); the file and the key are git-ignored.
+Release builds have no sample recipes. Debug builds install next to it as "Ricettario (debug)".
+
 ## Import from a web page
 
 "Importa da link" on the recipe list downloads the page, reads its schema.org `Recipe` JSON-LD
